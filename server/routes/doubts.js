@@ -1,0 +1,55 @@
+const express = require('express');
+const router = express.Router();
+const Doubt = require('../models/Doubt');
+const User = require('../models/User');
+const auth = require('../middleware/auth');
+
+// Get relevant doubts (friends + same branch/subject)
+router.get('/', auth, async (req, res) => {
+  try {
+    const me = await User.findById(req.user.id);
+    const doubts = await Doubt.find({
+      $or: [
+        { postedBy: { $in: me.friends } },
+        { branch: me.branch },
+        { subject: { $in: me.subjects } }
+      ]
+    }).sort('-createdAt');
+    res.json(doubts);
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
+// Get my doubts
+router.get('/mine', auth, async (req, res) => {
+  try {
+    const doubts = await Doubt.find({ postedBy: req.user.id }).sort('-createdAt');
+    res.json(doubts);
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
+router.post('/', auth, async (req, res) => {
+  try {
+    const { topic, description, subject } = req.body;
+    const me = await User.findById(req.user.id);
+    const doubt = await Doubt.create({ topic, description, subject, branch: me.branch, postedBy: req.user.id, postedByUsername: req.user.username });
+    res.json(doubt);
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
+router.post('/:id/reply', auth, async (req, res) => {
+  try {
+    const doubt = await Doubt.findById(req.params.id);
+    doubt.replies.push({ user: req.user.id, username: req.user.username, text: req.body.text });
+    await doubt.save();
+    res.json(doubt);
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
+router.put('/:id/resolve', auth, async (req, res) => {
+  try {
+    const doubt = await Doubt.findByIdAndUpdate(req.params.id, { resolved: true }, { new: true });
+    res.json(doubt);
+  } catch (e) { res.status(500).json({ message: e.message }); }
+});
+
+module.exports = router;
