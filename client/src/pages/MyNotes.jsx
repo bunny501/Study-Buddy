@@ -72,7 +72,7 @@ function NoteViewer({ note, onClose, onUpdate }) {
   const addTag = async (type) => {
     if (!selection) return
     try {
-      const { data } = await axios.post(`/api/notes/${note._id}/tag`, { ...selection, type })
+      const { data } = await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/notes/${note._id}/tag`, { ...selection, type })
       onUpdate(data)
       setSelection(null)
     } catch (e) { console.error(e) }
@@ -81,7 +81,7 @@ function NoteViewer({ note, onClose, onUpdate }) {
   const addReply = async (tagId) => {
     if (!reply.trim()) return
     try {
-      const { data } = await axios.post(`/api/notes/${note._id}/tag/${tagId}/reply`, { message: reply })
+      const { data } = await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/notes/${note._id}/tag/${tagId}/reply`, { message: reply })
       onUpdate(data)
       setReply('')
     } catch (e) { console.error(e) }
@@ -89,7 +89,7 @@ function NoteViewer({ note, onClose, onUpdate }) {
 
   const resolveTag = async (tagId) => {
     try {
-      const { data } = await axios.put(`/api/notes/${note._id}/tag/${tagId}/resolve`)
+      const { data } = await axios.put(`https://study-buddy-production-16e9.up.railway.app/api/notes/${note._id}/tag/${tagId}/resolve`)
       onUpdate(data)
     } catch (e) { console.error(e) }
   }
@@ -191,13 +191,13 @@ export default function MyNotes() {
   useEffect(() => { fetchNotes() }, [])
 
   const fetchNotes = async () => {
-    try { const { data } = await axios.get('/api/notes'); setNotes(data) } catch (e) {}
+    try { const { data } = await axios.get('https://study-buddy-production-16e9.up.railway.app/api/notes'); setNotes(data) } catch (e) {}
   }
 
   const submit = async (e) => {
     e.preventDefault(); setLoading(true)
     try {
-      await axios.post('/api/notes', form)
+      await axios.post('https://study-buddy-production-16e9.up.railway.app/api/notes', form)
       setForm({ title: '', subject: '', content: '' })
       setShowForm(false)
       fetchNotes()

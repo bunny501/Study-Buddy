@@ -15,7 +15,7 @@ export default function PartnerMatch() {
   const messagesEndRef = useRef()
 
   useEffect(() => {
-    axios.get('/api/users').then(r => { setUsers(r.data); setFiltered(r.data) }).catch(() => {})
+    axios.get('https://study-buddy-production-16e9.up.railway.app/api/users').then(r => { setUsers(r.data); setFiltered(r.data) }).catch(() => {})
     socket.on('dm:receive', (m) => setMessages(ms => [...ms, m]))
     return () => socket.off('dm:receive')
   }, [])
@@ -29,7 +29,7 @@ export default function PartnerMatch() {
 
   const openChat = async (u) => {
     setChatUser(u)
-    try { const { data } = await axios.get(`/api/messages/dm/${u._id}`); setMessages(data) } catch (e) {}
+    try { const { data } = await axios.get(`https://study-buddy-production-16e9.up.railway.app/api/messages/dm/${u._id}`); setMessages(data) } catch (e) {}
   }
 
   const sendMsg = (e) => {
@@ -40,7 +40,7 @@ export default function PartnerMatch() {
   }
 
   const sendRequest = async (userId) => {
-    try { await axios.post(`/api/users/request/${userId}`); alert('Friend request sent!') } catch (e) {}
+    try { await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/users/request/${userId}`); alert('Friend request sent!') } catch (e) {}
   }
 
   return (

@@ -22,14 +22,14 @@ export default function Profile() {
   useEffect(() => {
     fetchProfile()
     if (isMe) {
-      axios.get('/api/doubts').then(r => setDoubts(r.data)).catch(() => {})
-      axios.get('/api/doubts/mine').then(r => setMyDoubts(r.data)).catch(() => {})
+      axios.get('https://study-buddy-production-16e9.up.railway.app/api/doubts').then(r => setDoubts(r.data)).catch(() => {})
+      axios.get('https://study-buddy-production-16e9.up.railway.app/api/doubts/mine').then(r => setMyDoubts(r.data)).catch(() => {})
     }
   }, [userId])
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get(`/api/users/profile/${userId}`)
+      const { data } = await axios.get(`https://study-buddy-production-16e9.up.railway.app/api/users/profile/${userId}`)
       setProfile(data); setForm({ college: data.college, branch: data.branch, subjects: data.subjects?.join(', '), availability: data.availability })
     } catch (e) {}
   }
@@ -37,7 +37,7 @@ export default function Profile() {
   const saveProfile = async (e) => {
     e.preventDefault()
     try {
-      await axios.put('/api/users/profile', { ...form, subjects: form.subjects?.split(',').map(s => s.trim()).filter(Boolean) })
+      await axios.put('https://study-buddy-production-16e9.up.railway.app/api/users/profile', { ...form, subjects: form.subjects?.split(',').map(s => s.trim()).filter(Boolean) })
       setEditing(false); fetchProfile()
     } catch (e) {}
   }
@@ -45,30 +45,30 @@ export default function Profile() {
   const postDoubt = async (e) => {
     e.preventDefault()
     try {
-      await axios.post('/api/doubts', doubtForm)
+      await axios.post('https://study-buddy-production-16e9.up.railway.app/api/doubts', doubtForm)
       setDoubtForm({ topic: '', description: '', subject: '' }); setShowDoubtForm(false)
-      axios.get('/api/doubts/mine').then(r => setMyDoubts(r.data))
+      axios.get('https://study-buddy-production-16e9.up.railway.app/api/doubts/mine').then(r => setMyDoubts(r.data))
     } catch (e) {}
   }
 
   const addReply = async (doubtId) => {
     if (!reply[doubtId]?.trim()) return
     try {
-      await axios.post(`/api/doubts/${doubtId}/reply`, { text: reply[doubtId] })
+      await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/doubts/${doubtId}/reply`, { text: reply[doubtId] })
       setReply(r => ({ ...r, [doubtId]: '' }))
-      axios.get('/api/doubts').then(r => setDoubts(r.data))
+      axios.get('https://study-buddy-production-16e9.up.railway.app/api/doubts').then(r => setDoubts(r.data))
     } catch (e) {}
   }
 
   const resolveDoubt = async (doubtId) => {
     try {
-      await axios.put(`/api/doubts/${doubtId}/resolve`)
-      axios.get('/api/doubts/mine').then(r => setMyDoubts(r.data))
+      await axios.put(`https://study-buddy-production-16e9.up.railway.app/api/doubts/${doubtId}/resolve`)
+      axios.get('https://study-buddy-production-16e9.up.railway.app/api/doubts/mine').then(r => setMyDoubts(r.data))
     } catch (e) {}
   }
 
   const acceptRequest = async (fromId) => {
-    try { await axios.post(`/api/users/accept/${fromId}`); fetchProfile() } catch (e) {}
+    try { await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/users/accept/${fromId}`); fetchProfile() } catch (e) {}
   }
 
   if (!profile) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" /></div>

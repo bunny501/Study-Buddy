@@ -31,7 +31,7 @@ export default function TakeTest() {
   }, [])
 
   const fetchTests = async () => {
-    try { const { data } = await axios.get('/api/tests'); setTests(data) } catch (e) {}
+    try { const { data } = await axios.get('https://study-buddy-production-16e9.up.railway.app/api/tests'); setTests(data) } catch (e) {}
   }
 
   const addQuestion = () => setForm(f => ({ ...f, questions: [...f.questions, { question: '', options: ['', '', '', ''], answer: '', type: 'mcq' }] }))
@@ -46,7 +46,7 @@ export default function TakeTest() {
   const createTest = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await axios.post('/api/tests', form)
+      const { data } = await axios.post('https://study-buddy-production-16e9.up.railway.app/api/tests', form)
       setActiveTest(data)
       setView('created') // show share screen, not active test
       fetchTests()
@@ -56,7 +56,7 @@ export default function TakeTest() {
   const joinTest = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await axios.post(`/api/tests/${joinCode}/join`)
+      const { data } = await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/tests/${joinCode}/join`)
       setActiveTest(data); setAnswers(new Array(data.questions.length).fill(''))
       setView('active'); socket.emit('test:join', data._id)
     } catch (e) { alert('Test not found') }
@@ -64,7 +64,7 @@ export default function TakeTest() {
 
   const submitTest = async () => {
     try {
-      const { data } = await axios.post(`/api/tests/${activeTest._id}/submit`, { answers })
+      const { data } = await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/tests/${activeTest._id}/submit`, { answers })
       setActiveTest(data); setView('results')
       socket.emit('test:update', { testId: data._id, test: data })
     } catch (e) {}

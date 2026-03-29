@@ -29,13 +29,13 @@ export default function GroupDetail() {
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
 
   const fetchGroup = async () => {
-    try { const { data } = await axios.get(`/api/groups/${id}`); setGroup(data) } catch (e) {}
+    try { const { data } = await axios.get(`https://study-buddy-production-16e9.up.railway.app/api/groups/${id}`); setGroup(data) } catch (e) {}
   }
   const fetchMessages = async () => {
-    try { const { data } = await axios.get(`/api/messages/group/${id}`); setMessages(data) } catch (e) {}
+    try { const { data } = await axios.get(`https://study-buddy-production-16e9.up.railway.app/api/messages/group/${id}`); setMessages(data) } catch (e) {}
   }
   const fetchNotes = async () => {
-    try { const { data } = await axios.get(`/api/notes/group/${id}`); setNotes(data) } catch (e) {}
+    try { const { data } = await axios.get(`https://study-buddy-production-16e9.up.railway.app/api/notes/group/${id}`); setNotes(data) } catch (e) {}
   }
 
   const sendMsg = (e) => {
@@ -48,7 +48,7 @@ export default function GroupDetail() {
   const addNote = async (e) => {
     e.preventDefault()
     try {
-      await axios.post('/api/notes', { ...noteForm, groupId: id })
+      await axios.post('https://study-buddy-production-16e9.up.railway.app/api/notes', { ...noteForm, groupId: id })
       setNoteForm({ title: '', subject: '', content: '' }); setShowNoteForm(false); fetchNotes()
     } catch (e) {}
   }
@@ -56,14 +56,14 @@ export default function GroupDetail() {
   const addTask = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await axios.post(`/api/groups/${id}/task`, taskForm)
+      const { data } = await axios.post(`https://study-buddy-production-16e9.up.railway.app/api/groups/${id}/task`, taskForm)
       setGroup(data); setTaskForm({ title: '', assignedTo: '' })
     } catch (e) {}
   }
 
   const toggleTask = async (taskId, status) => {
     try {
-      const { data } = await axios.put(`/api/groups/${id}/task/${taskId}`, { status: status === 'pending' ? 'completed' : 'pending' })
+      const { data } = await axios.put(`https://study-buddy-production-16e9.up.railway.app/api/groups/${id}/task/${taskId}`, { status: status === 'pending' ? 'completed' : 'pending' })
       setGroup(data)
     } catch (e) {}
   }
